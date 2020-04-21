@@ -42,9 +42,8 @@ project.dependencies {
 
 BuildUtils.addLabKeyDependency(
         project: project,
-        config: 'uiTestImplementation',
+        config: 'implementation',
         depProjectPath: BuildUtils.getRemoteApiProjectPath(gradle),
-        depProjectConfig: 'default',
         depVersion: project.labkeyClientApiVersion)
 
 if (project.findProject(":remoteapi:labkey-api-jdbc") != null)
