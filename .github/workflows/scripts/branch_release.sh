@@ -103,7 +103,8 @@ if [ -z $MERGE_BRANCH ]; then
 	MERGE_BRANCH=fb_merge_$TAG
 fi
 
-git config user.name "$GITHUB_ACTOR"
+git config user.name "labkey-teamcity"
+git config user.email "teamcity@labkey.com"
 
 # Create branch and PR for merge forward
 git checkout -b $MERGE_BRANCH --no-track origin/$TARGET_BRANCH
