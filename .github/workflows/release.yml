@@ -22,6 +22,12 @@ jobs:
       uses: Geertvdc/setup-hub@v1.0.0
     
     - name: Create branches and PRs
+      run: ls -lart
+    
+    - name: Create branches and PRs
+      run: ls -lart *
+
+    - name: Create branches and PRs
       run: ./scripts/branch_release.sh
       env:
         TAG: github.event.ref
