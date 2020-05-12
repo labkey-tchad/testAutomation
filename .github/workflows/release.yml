@@ -3,12 +3,11 @@ name: Release Branching
 
 # Trigger on tags created by TeamCity
 on:
-  push:
-    tags: 
-      - '*'
+  create:
 
 jobs:
   branch:
+    if: github.event.ref_type == 'tag'
     # if: github.event.sender.login == 'labkey-teamcity'
     runs-on: ubuntu-latest
 
@@ -24,4 +23,4 @@ jobs:
     - name: Create branches and PRs
       run: .github/workflows/scripts/branch_release.sh
       env:
-        TAG: github.event.ref
+        TAG: ${{ github.event.ref }}
