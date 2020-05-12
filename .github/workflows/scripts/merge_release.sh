@@ -16,6 +16,8 @@ if [ -z $TARGET_BRANCH ] || [ -z $MERGE_BRANCH ] || [ -z $PR_NUMBER ]; then
 	exit 1
 fi
 
+git config user.name "$GITHUB_ACTOR"
+
 echo "Merge approved PR from $MERGE_BRANCH to $TARGET_BRANCH."
 git fetch --unshallow
 git checkout $TARGET_BRANCH

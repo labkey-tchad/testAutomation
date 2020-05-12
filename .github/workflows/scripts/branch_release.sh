@@ -103,6 +103,8 @@ if [ -z $MERGE_BRANCH ]; then
 	MERGE_BRANCH=fb_merge_$TAG
 fi
 
+git config user.name "$GITHUB_ACTOR"
+
 # Create branch and PR for merge forward
 git checkout -b $MERGE_BRANCH --no-track origin/$TARGET_BRANCH
 git merge --no-ff $GITHUB_SHA -m "Merge $TAG to $NEXT_RELEASE" && {
@@ -123,6 +125,11 @@ git merge --no-ff $GITHUB_SHA -m "Merge $TAG to $NEXT_RELEASE" && {
 } || {
 	# merge failed
 	git merge --abort
+	if [ $? != 0 ]; then
+		# If the --abort fails, a conflict didn't cause the merge to fail
+		echo "Unable to merge merge $TAG to $NEXT_RELEASE"
+		exit 1
+	fi
 	git reset --hard $GITHUB_SHA
 	git push -u origin $MERGE_BRANCH
 	if [ $? != 0 ]; then
