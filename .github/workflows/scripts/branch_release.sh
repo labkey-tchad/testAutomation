@@ -19,7 +19,7 @@ if [ -z $GITHUB_SHA ]; then
 	exit 1
 fi
 
-RELEASE_NUM=$(echo "$TAG" | grep -oE "^(\d+\.\d+)")
+RELEASE_NUM=$(echo "$TAG" | grep -oE "(\d+\.\d+)")
 
 if [ -z $RELEASE_NUM ]; then
 	echo "Tag does not appear to be for a release: $TAG" >&2
