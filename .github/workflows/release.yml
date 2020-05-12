@@ -21,10 +21,10 @@ jobs:
     - name: Setup Hub
       uses: Geertvdc/setup-hub@v1.0.0
     
-    - name: Create branches and PRs
+    - name: ls
       run: ls -lart
     
-    - name: Create branches and PRs
+    - name: ls2
       run: ls -lart *
 
     - name: Create branches and PRs
