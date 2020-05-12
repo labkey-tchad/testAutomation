@@ -1,0 +1,27 @@
+# Workflow to automate creation and updating of release branches
+name: Release Branching
+
+# Trigger on tags created by TeamCity
+on:
+  push:
+    tags: 
+      - '*'
+
+jobs:
+  branch:
+    # if: github.event.sender.login == 'labkey-teamcity'
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup Hub
+      uses: Geertvdc/setup-hub@v1.0.0
+    
+    - name: Create branches and PRs
+      run: ./scripts/branch_release.sh
+      env:
+        TAG: github.event.ref
