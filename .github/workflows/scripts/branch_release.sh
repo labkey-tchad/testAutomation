@@ -1,7 +1,5 @@
 #!/bin/bash
 
-cd ~/development/labkey/temp/testAutomation
-
 if ! [ -x "$(command -v hub)" ]; then
   echo 'Error: GitHub command line tool is not installed.' >&2
   exit 1
