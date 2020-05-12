@@ -29,7 +29,7 @@ fi
 SNAPSHOT_BRANCH="release$RELEASE_NUM-SNAPSHOT"
 RELEASE_BRANCH="release$RELEASE_NUM"
 
-# Initial release branch creation ("20.7.RC0")
+# Initial release branch creation (e.g. TAG=20.7.RC0)
 echo "Create $SNAPSHOT_BRANCH branch."
 hub api repos/{owner}/{repo}/git/refs --raw-field "ref=refs/heads/$SNAPSHOT_BRANCH" --raw-field "sha=$GITHUB_SHA"
 SNAPSHOT_CREATED="$?"
@@ -50,18 +50,26 @@ git fetch --unshallow
 RELEASE_DIFF=$(git log --cherry-pick --oneline --no-decorate origin/$RELEASE_BRANCH..$GITHUB_SHA | grep -v -e '^$')
 echo ""
 if [ $? != 0 ]; then
-	echo "No changes to merge for [$TAG]."
+	echo "No changes to merge for $TAG."
 	exit 0
 else
-	echo "Create fast-forward branch."
+	echo "Create fast-forward branch for $TAG."
 	FF_BRANCH="ff_$TAG"
 	hub api repos/{owner}/{repo}/git/refs --raw-field "ref=refs/heads/$FF_BRANCH" --raw-field "sha=$GITHUB_SHA"
+	if [ $? != 0 ]; then
+		echo "Failed to create branch: $FF_BRANCH"
+		exit 1
+	fi
 	echo "Create pull request."
 	hub pull-request -f -h $FF_BRANCH -b $RELEASE_BRANCH -a $TRIAGE_ALIAS -r $TRIAGE_ALIAS \
 		-m "Fast-forward for $TAG" \
 		-m "_Generated automatically._" \
 		-m "**Approve all matching PRs simultaneously.**" \
 		-m "**Approval will trigger automatic merge.**"
+	if [ $? != 0 ]; then
+		echo "Failed to create pull request for $FF_BRANCH"
+		exit 1
+	fi
 fi
 
 # Determine next non-monthly release
@@ -99,19 +107,35 @@ fi
 git checkout -b $MERGE_BRANCH --no-track origin/$TARGET_BRANCH
 git merge --no-ff $GITHUB_SHA -m "Merge $TAG to $NEXT_RELEASE" && {
 	git push -u origin $MERGE_BRANCH
+	if [ $? != 0 ]; then
+		echo "Failed to push merge branch: $MERGE_BRANCH"
+		exit 1
+	fi
 	hub pull-request -f -h $MERGE_BRANCH -b $TARGET_BRANCH -a $TRIAGE_ALIAS -r $TRIAGE_ALIAS \
 		-m "Merge $TAG to $NEXT_RELEASE" \
 		-m "_Generated automatically._" \
 		-m "**Approve all matching PRs simultaneously.**" \
 		-m "**Approval will trigger automatic merge.**"
+	if [ $? != 0 ]; then
+		echo "Failed to create pull request for $MERGE_BRANCH"
+		exit 1
+	fi
 } || {
 	# merge failed
 	git merge --abort
 	git reset --hard $GITHUB_SHA
 	git push -u origin $MERGE_BRANCH
+	if [ $? != 0 ]; then
+		echo "Failed to push merge branch: $MERGE_BRANCH"
+		exit 1
+	fi
 	hub pull-request -f -h $MERGE_BRANCH -b $TARGET_BRANCH -a $TRIAGE_ALIAS -r $TRIAGE_ALIAS \
 		-m "Merge $TAG to $NEXT_RELEASE (Conflicts)" \
 		-m "_Automatic merge failed!_ Please merge '$TARGET_BRANCH' into '$MERGE_BRANCH' and resolve conflicts manually." \
 		-m "**Approve all matching PRs simultaneously.**" \
 		-m "**Approval will trigger automatic merge.**"
+	if [ $? != 0 ]; then
+		echo "Failed to create pull request for $MERGE_BRANCH"
+		exit 1
+	fi
 }

@@ -24,3 +24,4 @@ jobs:
       run: .github/workflows/scripts/branch_release.sh
       env:
         TAG: ${{ github.event.ref }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
