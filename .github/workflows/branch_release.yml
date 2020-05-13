@@ -6,7 +6,7 @@ on:
   create:
 
 jobs:
-  branch:
+  branch_release:
     if: github.event.ref_type == 'tag'
     # if: github.event.sender.login == 'labkey-teamcity'
     runs-on: ubuntu-latest
