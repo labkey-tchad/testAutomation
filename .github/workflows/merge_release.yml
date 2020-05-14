@@ -9,7 +9,7 @@ on:
 
 jobs:
   merge_release:
-    # if: github.event.review.state == 'approved' && github.event.pull_request.user.login == 'github-actions'
+    if: github.event.review.state == 'approved' && github.event.pull_request.user.login == 'github-actions[bot]'
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -20,11 +20,6 @@ jobs:
 
     - name: Setup Hub
       uses: Geertvdc/setup-hub@v1.0.0
-
-    - name: debug
-      run: |
-        echo "state - ${{ github.event.review.state }}"
-        echo "login - ${{ github.event.pull_request.user.login }}"
 
     - name: Merge PR
       run: .github/workflows/scripts/merge_release.sh

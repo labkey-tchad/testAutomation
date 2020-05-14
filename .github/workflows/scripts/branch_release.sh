@@ -6,10 +6,11 @@ if ! [ -x "$(command -v hub)" ]; then
 fi
 
 TRIAGE_ALIAS='labkey-teamcity' # 'LabKey/Triage'
+#REF='/refs/tags/19.3.11'
 #TAG='19.3.11'
 #GITHUB_SHA='d4d2127481f61f07e6bf072f58967ce4928d7df8'
 
-if [ -z $TAG ]; then
+if [ -z $REF ]; then
 	echo "Tag not specified" >&2
 	exit 1
 fi
@@ -18,6 +19,8 @@ if [ -z $GITHUB_SHA ]; then
 	echo "Tagged SHA not specified" >&2
 	exit 1
 fi
+
+TAG=$(echo "$REF" | sed -e 's/\/refs\/tags\///')
 
 RELEASE_NUM=$(echo "$TAG" | grep -oE '([0-9]+\.[0-9]+)')
 
