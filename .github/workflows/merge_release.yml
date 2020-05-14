@@ -1,0 +1,35 @@
+# Workflow to automate merging release branches
+name: Release Merging
+
+# Trigger on PR approval
+on:
+  pull_request_review:
+    types:
+      - submitted
+
+jobs:
+  merge_release:
+    # if: github.event.review.state == 'approved' && github.event.pull_request.user.login == 'github-actions'
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup Hub
+      uses: Geertvdc/setup-hub@v1.0.0
+
+    - name: debug
+      run: |
+        echo "state - ${{ github.event.review.state }}"
+        echo "login - ${{ github.event.pull_request.user.login }}"
+
+    - name: Merge PR
+      run: .github/workflows/scripts/merge_release.sh
+      env:
+        TARGET_BRANCH: ${{ github.event.pull_request.base.ref }}
+        MERGE_BRANCH: ${{ github.event.pull_request.head.ref }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
