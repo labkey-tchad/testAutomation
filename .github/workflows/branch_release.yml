@@ -4,7 +4,7 @@ name: Release Branching
 # Trigger on tags created by TeamCity
 on:
   create:
-    tag:
+    tags:
       - '*'
 
 jobs:
