@@ -4,10 +4,10 @@ name: Release Branching
 # Trigger on tags created by TeamCity
 on:
   create:
+    tags: '*'
 
 jobs:
   branch_release:
-    if: github.event.ref_type == 'tag'
     # if: github.event.sender.login == 'labkey-teamcity'
     runs-on: ubuntu-latest
 
