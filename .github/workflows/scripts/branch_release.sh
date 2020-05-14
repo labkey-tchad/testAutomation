@@ -6,7 +6,7 @@ if ! [ -x "$(command -v hub)" ]; then
 fi
 
 TRIAGE_ALIAS='labkey-teamcity' # 'LabKey/Triage'
-#REF='/refs/tags/19.3.11'
+#REF='refs/tags/19.3.11'
 #TAG='19.3.11'
 #GITHUB_SHA='d4d2127481f61f07e6bf072f58967ce4928d7df8'
 
@@ -20,8 +20,10 @@ if [ -z $GITHUB_SHA ]; then
 	exit 1
 fi
 
-TAG=$(echo "$REF" | sed -e 's/\/refs\/tags\///')
+# Trim leading 'refs/tags/'
+TAG=$(echo "$REF" | sed -e 's/refs\/tags\///')
 
+# Trim patch number from tag
 RELEASE_NUM=$(echo "$TAG" | grep -oE '([0-9]+\.[0-9]+)')
 
 if [ -z $RELEASE_NUM ]; then
