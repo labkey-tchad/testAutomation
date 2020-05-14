@@ -20,7 +20,7 @@ if [ -z $GITHUB_SHA ]; then
 	exit 1
 fi
 
-TAG=$(echo "$REF" | sed -e 's/\/refs\/tags\///'
+TAG=$(echo "$REF" | sed -e 's/\/refs\/tags\///')
 
 RELEASE_NUM=$(echo "$TAG" | grep -oE '([0-9]+\.[0-9]+)')
 
