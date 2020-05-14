@@ -21,7 +21,7 @@ git config user.name "$GITHUB_ACTOR"
 echo "Merge approved PR from $MERGE_BRANCH to $TARGET_BRANCH."
 git fetch --unshallow
 git checkout $TARGET_BRANCH
-false && git merge origin/$MERGE_BRANCH -m "Merge " && git push || {
+git merge origin/$MERGE_BRANCH -m "Merge $MERGE_BRANCH to $TARGET_BRANCH" && git push || {
 	echo "Failed to merge!" >&2
 	hub api repos/{owner}/{repo}/issues/$PR_NUMBER/comments --raw-field 'body=@'$TRIAGE_ALIAS' __ERROR__ Automatic merge failed!'
 	exit 1

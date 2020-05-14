@@ -10,7 +10,6 @@ on:
 jobs:
   merge_release:
     # if: github.event.review.state == 'approved' && github.event.pull_request.user.login == 'github-actions'
-    # if: github.event.sender.login == 'labkey-teamcity'
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -27,7 +26,7 @@ jobs:
         echo "state - ${{ github.event.review.state }}"
         echo "login - ${{ github.event.pull_request.user.login }}"
 
-    - name: Create branches and PRs
+    - name: Merge PR
       run: .github/workflows/scripts/merge_release.sh
       env:
         TARGET_BRANCH: ${{ github.event.pull_request.base.ref }}

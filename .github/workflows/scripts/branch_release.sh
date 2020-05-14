@@ -57,7 +57,7 @@ else
 	FF_BRANCH="ff_$TAG"
 	hub api repos/{owner}/{repo}/git/refs --raw-field "ref=refs/heads/$FF_BRANCH" --raw-field "sha=$GITHUB_SHA"
 	if [ $? != 0 ]; then
-		echo "Failed to create branch: $FF_BRANCH"
+		echo "Failed to create branch: $FF_BRANCH" >&2
 		exit 1
 	fi
 	echo "Create pull request."
@@ -67,7 +67,7 @@ else
 		-m "**Approve all matching PRs simultaneously.**" \
 		-m "**Approval will trigger automatic merge.**"
 	if [ $? != 0 ]; then
-		echo "Failed to create pull request for $FF_BRANCH"
+		echo "Failed to create pull request for $FF_BRANCH" >&2
 		exit 1
 	fi
 fi
@@ -110,7 +110,7 @@ git checkout -b $MERGE_BRANCH --no-track origin/$TARGET_BRANCH
 git merge --no-ff $GITHUB_SHA -m "Merge $TAG to $NEXT_RELEASE" && {
 	git push -u origin $MERGE_BRANCH
 	if [ $? != 0 ]; then
-		echo "Failed to push merge branch: $MERGE_BRANCH"
+		echo "Failed to push merge branch: $MERGE_BRANCH" >&2
 		exit 1
 	fi
 	hub pull-request -f -h $MERGE_BRANCH -b $TARGET_BRANCH -a $TRIAGE_ALIAS -r $TRIAGE_ALIAS \
@@ -119,7 +119,7 @@ git merge --no-ff $GITHUB_SHA -m "Merge $TAG to $NEXT_RELEASE" && {
 		-m "**Approve all matching PRs simultaneously.**" \
 		-m "**Approval will trigger automatic merge.**"
 	if [ $? != 0 ]; then
-		echo "Failed to create pull request for $MERGE_BRANCH"
+		echo "Failed to create pull request for $MERGE_BRANCH" >&2
 		exit 1
 	fi
 } || {
@@ -127,13 +127,13 @@ git merge --no-ff $GITHUB_SHA -m "Merge $TAG to $NEXT_RELEASE" && {
 	git merge --abort
 	if [ $? != 0 ]; then
 		# If the --abort fails, a conflict didn't cause the merge to fail
-		echo "Unable to merge merge $TAG to $NEXT_RELEASE"
+		echo "Unable to merge merge $TAG to $NEXT_RELEASE" >&2
 		exit 1
 	fi
 	git reset --hard $GITHUB_SHA
 	git push -u origin $MERGE_BRANCH
 	if [ $? != 0 ]; then
-		echo "Failed to push merge branch: $MERGE_BRANCH"
+		echo "Failed to push merge branch: $MERGE_BRANCH" >&2
 		exit 1
 	fi
 	hub pull-request -f -h $MERGE_BRANCH -b $TARGET_BRANCH -a $TRIAGE_ALIAS -r $TRIAGE_ALIAS \
@@ -142,7 +142,7 @@ git merge --no-ff $GITHUB_SHA -m "Merge $TAG to $NEXT_RELEASE" && {
 		-m "**Approve all matching PRs simultaneously.**" \
 		-m "**Approval will trigger automatic merge.**"
 	if [ $? != 0 ]; then
-		echo "Failed to create pull request for $MERGE_BRANCH"
+		echo "Failed to create pull request for $MERGE_BRANCH" >&2
 		exit 1
 	fi
 }
