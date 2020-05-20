@@ -1,0 +1,29 @@
+name: Sync branch from fork
+
+on:
+  pull_request_review_comment:
+  - types: ['created']
+
+jobs:
+  repo-sync:
+    if: github.event.comment.body == 'sync' && 
+        github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+    runs-on: ubuntu-latest
+    steps:
+    - name: "Check if commenter has write access"
+      # https://github.com/marketplace/actions/repo-permission-check-action
+      uses: "lannonbr/repo-permission-check-action@2.0.0"
+      with:
+        permission: "write"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: checkout
+      uses: actions/checkout@master
+
+    - name: Sync Branch
+      run: -
+        git fetch ${{ github.event.pull_request.head.repo.html_url }} ${{ github.event.pull_request.head.ref }}
+        git push --force origin ${{ github.event.pull_request.head.ref }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
