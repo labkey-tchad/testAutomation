@@ -18,9 +18,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Setup Hub
-      uses: Geertvdc/setup-hub@v1.0.0
-
     - name: Merge PR
       run: .github/workflows/scripts/merge_release.sh
       env:
