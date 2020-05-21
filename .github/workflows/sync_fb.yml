@@ -22,7 +22,7 @@ jobs:
       uses: actions/checkout@master
 
     - name: Sync Branch
-      run: -
+      run: |
         git fetch ${{ github.event.pull_request.head.repo.html_url }} ${{ github.event.pull_request.head.ref }}
         git push --force origin ${{ github.event.pull_request.head.ref }}
       env:
