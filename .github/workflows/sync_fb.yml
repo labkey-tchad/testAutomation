@@ -2,11 +2,11 @@ name: Sync branch from fork
 
 on:
   pull_request_review_comment:
-  - types: ['created']
 
 jobs:
   repo-sync:
-    if: github.event.comment.body == 'sync' && 
+    if: github.event.action == 'created' && 
+        github.event.comment.body == 'sync' && 
         github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     runs-on: ubuntu-latest
     steps:
