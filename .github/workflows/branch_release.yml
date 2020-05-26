@@ -19,7 +19,6 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Create branches and PRs
-      run: .github/workflows/scripts/branch_release.sh
-      env:
-        REF: ${{ github.event.ref }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: labkey-tchad/gitHubActions/branch-release@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
