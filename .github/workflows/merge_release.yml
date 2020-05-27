@@ -19,9 +19,9 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Merge PR
-      run: .github/workflows/scripts/merge_release.sh
-      env:
-        TARGET_BRANCH: ${{ github.event.pull_request.base.ref }}
-        MERGE_BRANCH: ${{ github.event.pull_request.head.ref }}
-        PR_NUMBER: ${{ github.event.pull_request.number }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: labkey-tchad/gitHubActions/merge-release@master
+      with:
+        target_branch: ${{ github.event.pull_request.base.ref }}
+        merge_branch: ${{ github.event.pull_request.head.ref }}
+        pr_number: ${{ github.event.pull_request.number }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
