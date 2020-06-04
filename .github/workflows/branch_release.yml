@@ -9,7 +9,7 @@ on:
 
 jobs:
   branch_release:
-    if: github.event.created # && github.event.sender.login == 'labkey-tchad'
+    if: github.event.created && github.event.sender.login == 'labkey-tchad'
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -21,6 +21,6 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Create branches and PRs
-      uses: labkey/gitHubActions/branch-release@master
+      uses: labkey/gitHubActions/branch-release@script_cleanup
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
